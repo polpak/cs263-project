@@ -3,15 +3,9 @@
     <application>stunning-shadow-733</application>
     <version>${appengine.app.version}</version>
     <threadsafe>true</threadsafe>
-    <public-root>/public</public-root>
     <sessions-enabled>true</sessions-enabled>
-    
-    <static-files>
-    	<include path="/public/**" />
-    </static-files>
     
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
     </system-properties>
-
 </appengine-web-app>

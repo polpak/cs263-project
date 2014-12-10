@@ -1,0 +1,16 @@
+
+*{margin:0;padding:0}
+body{font-family:"Myriad Pro", Verdana, Arial, Helvetica, sans-serif;font-size:100%;color:#fff;text-align:center;line-height:145%;background-color:#666;}
+h1, h2, h3, h4, h5 {font-weight:normal;padding:0 0 10px 0;line-height:125%;}
+p, ul, ol{margin:0 0 10px 0;}
+blockquote {padding:5px 30px 10px 30px; font-style:oblique;}
+
+a img, img a {border:none;text-decoration:none;}
+a, a:link {color:#193b8b;text-decoration:none;}
+a:hover {color:#000;text-decoration:underline;}
+
+h1 {font-size:200%;}
+h2 {font-size:160%;}
+h3 {font-size:140%;}
+h4 {font-size:120%;font-weight:bold;}
+ul.form-errors>li { color: #c66;}
