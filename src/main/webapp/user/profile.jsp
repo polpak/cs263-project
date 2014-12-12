@@ -9,16 +9,30 @@
 <%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
 <%@ page import="com.google.appengine.api.datastore.Query" %>
 
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreServiceFactory" %>
+<%@ page import="com.google.appengine.api.blobstore.BlobstoreService" %>
+
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Date" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<%  if(session.getAttribute("email_address") == null)
+
+<%
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+	if(session.getAttribute("email_address") == null) {
 		response.sendRedirect("/user/login.jsp");
-	else { 
+	} else { 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	    Key userKey = KeyFactory.createKey("User", (String)session.getAttribute("email_address"));
 	    Entity user = datastore.get(userKey);
+	    Query posted_quests_query = new Query("Quest").setAncestor(userKey);
+	    List<Entity> posted_quests = datastore.prepare(posted_quests_query).asList(FetchOptions.Builder.withDefaults());
+	    
+	    Query accepted_quests_query = new Query("AcceptedQuestRole").setAncestor(userKey).addSort("expires", Query.SortDirection.ASCENDING);
+	    List<Entity> accepted_quests = datastore.prepare(accepted_quests_query).asList(FetchOptions.Builder.withDefaults());
 %>
-	<!DOCTYPE html>
+<!DOCTYPE html>
 	<html>
 	<head>
 	<title>Questor - The world is your RPG</title>
@@ -30,7 +44,87 @@
 		<h1>Questor!</h1>
 		<h2>The world is your RPG.</h2>
 	</header>
-	  User Profile
+		<div id="user-profile">
+	  		<img id="user-avatar" height="100" width="66" src="/user/avatar">
+	  	<form action="<%= blobstoreService.createUploadUrl("/user/avatar") %>" method="post" enctype="multipart/form-data">
+            <input type="file" name="user_avatar">
+            <input type="submit" value="Update Avatar">
+        </form>
+	  		<span id="name"><%= user.getProperty("first_name") %> <%= user.getProperty("last_name") %></span>
+	  	</div>
+	  	<div class="quest-container">
+	  		<% if(!posted_quests.isEmpty()) { %>
+			  	<table id="posted-quests">
+			  			<tr class="header-row"><th>Title</th><th>Roles filled<th><th>Expiration</th><th>Status</th></tr>
+			  			<% for(Entity quest : posted_quests){
+			  				String title = (String)quest.getProperty("title");
+			  				Key questKey = quest.getKey();
+			  				Query quest_role_query = new Query("QuestRole").setAncestor(questKey);
+			  				List<Entity> quest_roles = datastore.prepare(quest_role_query).asList(FetchOptions.Builder.withDefaults());
+			  				
+			  				int role_count = 0;
+			  				int accepted_count = 0;
+			  				int completed_count = 0;
+			  				
+			  				for(Entity role : quest_roles) {
+			  					role_count += 1;
+			  					if(role.hasProperty("quester")){
+			  						accepted_count += 1;
+			  						if(role.hasProperty("completed"))
+			  							completed_count += 1;
+			  					}
+			  				}
+			  				
+			  				String rolesFilled = String.format("%d/%d", role_count, accepted_count);
+			  				Date expiration = (Date)quest.getProperty("expires");
+			  				
+			  				String status = "Looking for more";
+			  				if(role_count == accepted_count) {
+			  					status = "In progress";
+			  					if(completed_count == role_count)
+			  						status = "Quest complete!";
+			  				}
+			  				
+			  			%>
+			  				<tr>
+			  					<td><a href="/quests/show.jsp?k=<%=quest.getKey()%>"><%=title%></a></td>
+			  					<td><%=rolesFilled%></td>
+			  					<td><%=expiration %></td>
+			  					<td><%=status %></td>
+			  				</tr>
+			  		<% } %>
+			  	</table>
+		  	<% } %>
+		  	<a href="/quests/new.jsp">Create a new quest!</a>
+	  	</div>
+	  	<div class="quest-container">
+		  	<% if(!accepted_quests.isEmpty()) { %>
+			  	<table id="accepted-quests">
+			  			<tr class="header-row"><th>Title</th><th>Role<th><th>Expiration</th><th>Status</th></tr>
+			  			<% for(Entity questRole : accepted_quests) { 
+			  				Key acceptedQuestKey = (Key)questRole.getProperty("questKey");
+			  				Entity quest = datastore.get(acceptedQuestKey);
+			  				String title = (String)quest.getProperty("title");
+			  				String role = (String)questRole.getProperty("name");
+			  				Date expiration = (Date)quest.getProperty("expires");
+			  				String status = "Accepted";
+			  				if(questRole.hasProperty("completed"))
+			  					status = "Completed";
+			  				
+			  			%>
+			  				<tr>
+			  					<td><a href="/quests/show.jsp?k=<%=acceptedQuestKey%>"><%=title%></a></td>
+			  					<td><%=role%></td>
+			  					<td><%=expiration %></td>
+			  					<td><%=status %></td>
+			  				</tr>
+			  			
+			  			<% } %>
+			  	</table>
+			<% } %>
+			<a href="/quests/search.jsp">Find a quest!</a>
+	  	</div>
 	</body>
 	</html>
+	
 <% } %>
