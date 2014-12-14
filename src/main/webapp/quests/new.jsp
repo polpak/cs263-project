@@ -30,12 +30,18 @@
 	<head>
 	<title>Questor - The world is your RPG</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript">
+			
+
+		
+	</script>
 	<link type="text/css" rel="stylesheet" href="/css/main.css"/>
 	</head>
 	<body>
 		<h1>Create a new Quest</h1>
 		<div id="new-quest-form">
-			<form action="/quests/new" method="POST">
+			<form method="POST">
+				<input type="text">
 			</form>
 		</div>
 	</body>
