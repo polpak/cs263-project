@@ -11,15 +11,18 @@
 
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Date" %>
+
+<%@ page import="questor.User" %>
+<%@ page import="questor.Quest" %>
+
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 
 <%
 	if(session.getAttribute("email_address") == null) {
 		response.sendRedirect("/user/login.jsp");
 	} else { 
-		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-	    Key userKey = KeyFactory.createKey("User", (String)session.getAttribute("email_address"));
-	    Entity user = datastore.get(userKey);
+		User user = User.fromEmailAddress((String)session.getAttribute("email_address"));
 %>
 
 <!DOCTYPE html>
@@ -32,7 +35,10 @@
 	<body>
 		<h1>Create a new Quest</h1>
 		<div id="new-quest-form">
-			<form action="/quests/new" method="POST"
+			<form action="/quests/new" method="POST">
+			</form>
 		</div>
 	</body>
 	</html>
+	
+<% } %>
