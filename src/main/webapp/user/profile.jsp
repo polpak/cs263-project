@@ -26,11 +26,18 @@
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	    Key userKey = KeyFactory.createKey("User", (String)session.getAttribute("email_address"));
 	    Entity user = datastore.get(userKey);
-	    Query posted_quests_query = new Query("Quest").setAncestor(userKey);
-	    List<Entity> posted_quests = datastore.prepare(posted_quests_query).asList(FetchOptions.Builder.withDefaults());
 	    
-	    Query accepted_quests_query = new Query("AcceptedQuestRole").setAncestor(userKey).addSort("expires", Query.SortDirection.ASCENDING);
-	    List<Entity> accepted_quests = datastore.prepare(accepted_quests_query).asList(FetchOptions.Builder.withDefaults());
+	    Query posted_quests_query = new Query("Quest").setAncestor(userKey);	     
+	    List<Quest> posted_quests = Quest.fromQuery(datastore, posted_quests_query);
+	    
+	    Query accepted_quests_query = new Query("AcceptedQuests").setAncestor(userKey).addSort("expires", Query.SortDirection.ASCENDING);
+	    List<Entity> accepted_quest_entities = datastore.prepare(accepted_quests_query).asList(FetchOptions.Builder.withDefaults());
+	    List<String> accepted_keys = new ArrayList<String>();
+	    
+	    for(Entity e : accepted_quest_entities) {
+	    	accepted_keys.add(e.getProperty("quest_key");
+	    }
+	    List<Quest> accepted_quests = Quest.fromDatastore(datastore, accepted_keys);
 %>
 <!DOCTYPE html>
 	<html>
