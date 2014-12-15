@@ -47,8 +47,8 @@ public class Quest {
 	}
 	
 	
-	public static Quest fromKey(String questKey) throws EntityNotFoundException, ValueError {
-		return Quest.fromEntity(GAEDatastore.get(KeyFactory.createKey("Quest", questKey)));
+	public static Quest fromKey(Long questKey) throws EntityNotFoundException, ValueError {
+		return Quest.fromEntity(GAEDatastore.get(KeyFactory.createKey("Quest", questKey.longValue())));
 	}
 	
 	public static List<Quest> findByQuester(User quester) {
@@ -75,7 +75,7 @@ public class Quest {
 		}
 	}
 
-	public Quest(User questMaster, String title, String description, int reward) 
+	public Quest(User questMaster, String title, String description, Long reward) 
 			throws ValueError {
 		
 		if(questMaster == null)
@@ -104,6 +104,9 @@ public class Quest {
 
 		GAEDatastore.put(e);
 		
+		e.setProperty("quest_key", e.getKey().getId());
+		GAEDatastore.put(e);
+		this.setQuestKey(e.getKey().getId());
 	}
 
 
@@ -164,25 +167,25 @@ public class Quest {
 	}
 
 	
-	public int getReward() {
+	public Long getReward() {
 		return reward;
 	}
 
-	public void setReward(int reward) throws ValueError {
+	public void setReward(Long value) throws ValueError {
 		
-		if(reward <= 0)
+		if(value <= 0)
 			throw new ValueError("Quests must have a positive reward.");
 		
-		this.reward = reward;
+		this.reward = value;
 	}
 
 
-	public String getQuestKey() {
+	public Long getQuestKey() {
 		return questKey;
 	}
 
-	public void setQuestKey(String questKey) {
-		this.questKey = questKey;
+	public void setQuestKey(Long value) {
+		this.questKey = value;
 	}
 
 	public static Quest fromJSON(String json) throws ValueError {
@@ -190,6 +193,31 @@ public class Quest {
 		System.out.println(json);
     	Quest q =  gson.fromJson(json, Quest.class);
     	return q;
+	}
+	
+	public String toJson() {
+		Gson gson = new Gson();
+    	String json = gson.toJson(this);
+    	return json;
+	}
+	
+	public void updateStore() throws EntityNotFoundException {
+		if(this.questKey == null)
+			throw new EntityNotFoundException(null);
+		
+		Entity e = GAEDatastore.get(KeyFactory.createKey("Quest", this.questKey.longValue()));
+		
+		e.setProperty("quest_master_key", this.questMasterKey);
+		e.setProperty("title", title);
+		e.setProperty("description", description);
+		e.setProperty("reward", reward);
+		e.setProperty("expiration", expiration);
+		
+		if(this.questerKey != null)
+			e.setProperty("quester_key", this.questerKey);
+
+		GAEDatastore.put(e);
+		
 	}
 	
 	/*
@@ -216,8 +244,8 @@ public class Quest {
 			q.setTitle((String) entity.getProperty("title"));
 			q.setDescription((String) entity.getProperty("description"));
 			q.setExpiration((Date) entity.getProperty("expiration"));
-			q.setQuestKey((String) entity.getProperty("quest_key"));
-			q.setReward((int) entity.getProperty("reward"));
+			q.setQuestKey((Long) entity.getProperty("quest_key"));
+			q.setReward((Long)entity.getProperty("reward"));
 			
 			if(entity.hasProperty("quester_key"))
 				q.setQuesterKey((String) entity.getProperty("quester_key"));
@@ -229,16 +257,14 @@ public class Quest {
 
 	private static DatastoreService GAEDatastore = DatastoreServiceFactory.getDatastoreService();
 	
-	private String questKey;
+	private Long questKey;
 	private String questMasterKey;
 	private String title;
 	private String description;
 	private Date expiration;
 	private String questerKey;
-	private int reward;
+	private Long reward;
 	private boolean completed;
-
-
 
 	
 }

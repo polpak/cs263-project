@@ -43,11 +43,14 @@
 					
 					questData["reward"] = Number(questData["reward"]);
 					var jsonData = JSON.stringify(questData);
-					$("#json-data").text(jsonData);
 				    e.preventDefault();
 				    
-				    success = function(data, textStatus, jqXHR) {
+				    var success = function(data, textStatus, jqXHR) {
 				    	window.location = "/user/profile.jsp";
+				    }
+				    
+				    error = function(data, textStatus, jqXHR) {
+				    	alert("There was an error creating the quest");
 				    }
 				    
 				    $.ajax({
@@ -71,15 +74,23 @@
 		for(String field : fieldList) {
 			String lower = field.toLowerCase();
 			String type = "text";
-			if( lower.equals("description"))
+			if( lower.equals("description")){
 				type = "textarea";
+			}
+			
+			StringBuffer formElem = new StringBuffer(String.format("<label for=\"%s\">%s</label>", lower, field));
+			if(type.equals("textarea")) 
+				formElem.append(String.format("<textarea rows=\"5\" cols=\"50\" name=\"%s\" id=\"%s\" required></textarea>",
+												lower, lower));
+			else 
+				formElem.append(String.format("<input type=\"%s\" name=\"%s\" id=\"%s\" value=\"\" required>", 
+												type, lower, lower));
+			
 		%>
-			<div class="quest-<%=lower%>"><label for="<%=lower%>"><%=field %></label><input type="<%=type %>" name="<%=lower%>"></div>
+			<%=formElem.toString()%><br>
 		<% } %>
-		<input type="submit" name="Submit">			
+		<input type="submit" name="Create Quest" value="Create Quest">
 		</form>
-		<div id="json-data">
-		</div>
 	</body>
 	</html>
 	
