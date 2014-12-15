@@ -55,53 +55,61 @@
 	  		<% if(!posted_quests.isEmpty()) { %>
 			  	<table id="posted-quests">
 			  			<tr class="header-row"><th>Title</th><th>Reward</th><th>Expiration</th><th>Status</th></tr>
-			  			<% for(Quest quest : posted_quests){
-			  				String status = "Looking for quester";
-			  				if(quest.isAccepted()) {
-			  					status = "In progress";
-			  				}
-			  				if(quest.isCompleted()) {
-			  					status = "Complete";
-			  				}
-			  				else if(quest.getExpires().before(new Date())) {
-			  					status = "Expired";
-			  				}
+			  			<%
+			  				for(Quest quest : posted_quests){
+			  				  				String status = "Looking for quester";
+			  				  				if(quest.isAccepted()) {
+			  				  					status = "In progress";
+			  				  				}
+			  				  				if(quest.isCompleted()) {
+			  				  					status = "Complete";
+			  				  				}
+			  				  				else if(quest.getExpiration().before(new Date())) {
+			  				  					status = "Expired";
+			  				  				}
 			  			%>
 			  				<tr>
-			  					<td><a href="/quests/show.jsp?k=<%=quest.getQuestKey()%>"><%=quest.getTitle()%></a></td>
+			  					<td><a href="/questor/show.jsp?k=<%=quest.getQuestKey()%>"><%=quest.getTitle()%></a></td>
 			  					<td><%=quest.getReward()%></td>
-			  					<td><%=quest.getExpires() %></td>
-			  					<td><%=status %></td>
+			  					<td><%=quest.getExpiration()%></td>
+			  					<td><%=status%></td>
 			  				</tr>
-			  		<% } %>
+			  		<%
+			  			}
+			  		%>
 			  	</table>
-		  	<% } %>
-		  	<a href="/quests/new.jsp">Create a new quest!</a>
+		  	<%
+		  		}
+		  	%>
+		  	<a href="/questor/new.jsp">Create a new quest!</a>
 	  	</div>
 	  	<div class="quest-container">
-		  	<% if(!accepted_quests.isEmpty()) { %>
+		  	<%
+		  		if(!accepted_quests.isEmpty()) {
+		  	%>
 			  	<table id="accepted-quests">
 			  			<tr class="header-row"><th>Title</th><th>Reward<th><th>Expiration</th><th>Status</th></tr>
-			  			<% for(Quest quest : accepted_quests){
-			  				String status = "In progress";
-			  				
-			  				if(quest.isCompleted()) {
-			  					status = "Complete";
-			  				}
-			  				else if(quest.getExpires().before(new Date())) {
-			  					status = "Expired";
-			  				}
+			  			<%
+			  				for(Quest quest : accepted_quests){
+			  				  				String status = "In progress";
+			  				  				
+			  				  				if(quest.isCompleted()) {
+			  				  					status = "Complete";
+			  				  				}
+			  				  				else if(quest.getExpiration().before(new Date())) {
+			  				  					status = "Expired";
+			  				  				}
 			  			%>
 			  				<tr>
-			  					<td><a href="/quests/show.jsp?k=<%=quest.getQuestKey()%>"><%=quest.getTitle()%></a></td>
+			  					<td><a href="/questor/show.jsp?k=<%=quest.getQuestKey()%>"><%=quest.getTitle()%></a></td>
 			  					<td><%=quest.getReward()%></td>
-			  					<td><%=quest.getExpires() %></td>
+			  					<td><%=quest.getExpiration()%></td>
 			  					<td><%=status %></td>
 			  				</tr>
 			  		<% } %>
 			  	</table>
 			<% } %>
-			<a href="/quests/search.jsp">Find a quest!</a>
+			<a href="/questor/search.jsp">Find a quest!</a>
 	  	</div>
 	</body>
 	</html>

@@ -1,6 +1,7 @@
 package questor;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.gson.Gson;
 
 
 /*
@@ -44,6 +46,7 @@ public class Quest {
 		return quests;
 	}
 	
+	
 	public static Quest fromKey(String questKey) throws EntityNotFoundException, ValueError {
 		return Quest.fromEntity(GAEDatastore.get(KeyFactory.createKey("Quest", questKey)));
 	}
@@ -52,7 +55,7 @@ public class Quest {
 		Query query = new Query("Quest").setFilter(new Query.FilterPredicate("quester_key",
 															FilterOperator.EQUAL,
 															quester.getUserKey()
-													)).addSort("expires", SortDirection.ASCENDING);
+													)).addSort("expiration", SortDirection.ASCENDING);
 		try {
 			return Quest.fromEntities(GAEDatastore.prepare(query).asList(FetchOptions.Builder.withDefaults()));
 		} catch (ValueError e) {
@@ -64,7 +67,7 @@ public class Quest {
 		Query query = new Query("Quest").setFilter(new Query.FilterPredicate("quest_master_key",
 															FilterOperator.EQUAL,
 															questMaster.getUserKey()
-													)).addSort("expires", SortDirection.ASCENDING);
+													)).addSort("expiration", SortDirection.ASCENDING);
 		try {
 			return Quest.fromEntities(GAEDatastore.prepare(query).asList(FetchOptions.Builder.withDefaults()));
 		} catch (ValueError e) {
@@ -72,7 +75,7 @@ public class Quest {
 		}
 	}
 
-	public Quest(User questMaster, String title, String description, int reward, Date expiration) 
+	public Quest(User questMaster, String title, String description, int reward) 
 			throws ValueError {
 		
 		if(questMaster == null)
@@ -80,11 +83,16 @@ public class Quest {
 		
 		this.questMasterKey = questMaster.getUserKey();
 		
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, 2);
+		Date expiration = c.getTime();
+		
+		
 		this.setTitle(title);
 		this.setDescription(description);
 		this.setCompleted(false);
 		this.setReward(reward);
-		this.setExpires(expiration);
+		this.setExpiration(expiration);
 		
 		
 		Entity e = new Entity("Quest");
@@ -92,7 +100,7 @@ public class Quest {
 		e.setProperty("title", title);
 		e.setProperty("description", description);
 		e.setProperty("reward", reward);
-		e.setProperty("expires", expiration);
+		e.setProperty("expiration", expiration);
 
 		GAEDatastore.put(e);
 		
@@ -144,23 +152,23 @@ public class Quest {
 		this.description = description;
 	}
 	
-	public Date getExpires() {
-		return expires;
+	public Date getExpiration() {
+		return expiration;
 	}
 	
-	public void setExpires(Date expiration) throws ValueError {
+	public void setExpiration(Date expiration) throws ValueError {
 		if(expiration == null || expiration.before(new Date()))
 			throw new ValueError("Quests must have a future date.");
 		
-		this.expires = expiration;
+		this.expiration = expiration;
 	}
 
 	
-	public Integer getReward() {
+	public int getReward() {
 		return reward;
 	}
 
-	public void setReward(Integer reward) throws ValueError {
+	public void setReward(int reward) throws ValueError {
 		
 		if(reward <= 0)
 			throw new ValueError("Quests must have a positive reward.");
@@ -177,6 +185,12 @@ public class Quest {
 		this.questKey = questKey;
 	}
 
+	public static Quest fromJSON(String json) throws ValueError {
+		Gson gson = new Gson();
+		System.out.println(json);
+    	Quest q =  gson.fromJson(json, Quest.class);
+    	return q;
+	}
 	
 	/*
 	 * Create an empty quest (internal use only)
@@ -201,8 +215,9 @@ public class Quest {
 			
 			q.setTitle((String) entity.getProperty("title"));
 			q.setDescription((String) entity.getProperty("description"));
-			q.setExpires((Date) entity.getProperty("expires"));
+			q.setExpiration((Date) entity.getProperty("expiration"));
 			q.setQuestKey((String) entity.getProperty("quest_key"));
+			q.setReward((int) entity.getProperty("reward"));
 			
 			if(entity.hasProperty("quester_key"))
 				q.setQuesterKey((String) entity.getProperty("quester_key"));
@@ -218,10 +233,11 @@ public class Quest {
 	private String questMasterKey;
 	private String title;
 	private String description;
-	private Date expires;
+	private Date expiration;
 	private String questerKey;
-	private Integer reward;
+	private int reward;
 	private boolean completed;
+
 
 
 	

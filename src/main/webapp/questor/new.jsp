@@ -31,18 +31,54 @@
 	<title>Questor - The world is your RPG</title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript">
-			
 
+	$( document ).ready(function() {
+		$("#new-quest-form").submit(function(e)
+				{
+					var postData = $(this).serializeArray();
+					var questData = {};
+					$.each( postData, function( i, field ) {
+						questData[field.name] = field.value;
+					});
+					
+					questData["reward"] = Number(questData["reward"]);
+					var jsonData = JSON.stringify(questData);
+					$("#json-data").text(jsonData);
+				    e.preventDefault();
+				    
+				    success = function(data, textStatus, jqXHR) {
+				    	window.location = "/user/profile.jsp";
+				    }
+				    
+				    $.ajax({
+				    		type: "POST",
+							url: "/quests/new",
+							data: jsonData,
+							success: success,
+							contentType: "application/json"
+							});
+				});
+	});
 		
 	</script>
 	<link type="text/css" rel="stylesheet" href="/css/main.css"/>
 	</head>
 	<body>
 		<h1>Create a new Quest</h1>
-		<div id="new-quest-form">
-			<form method="POST">
-				<input type="text">
-			</form>
+		<form id="new-quest-form">
+		<% 
+		String [] fieldList= {"Title", "Description", "Reward"};
+		for(String field : fieldList) {
+			String lower = field.toLowerCase();
+			String type = "text";
+			if( lower.equals("description"))
+				type = "textarea";
+		%>
+			<div class="quest-<%=lower%>"><label for="<%=lower%>"><%=field %></label><input type="<%=type %>" name="<%=lower%>"></div>
+		<% } %>
+		<input type="submit" name="Submit">			
+		</form>
+		<div id="json-data">
 		</div>
 	</body>
 	</html>
