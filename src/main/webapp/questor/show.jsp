@@ -56,6 +56,9 @@
 				$('#quest-title').text(data["title"]);
 				$('#quest-description').text(data["description"]);
 				$('#quest-reward').text(data["reward"]);
+				expiration = new Date(data['expiration']);
+				$('#quest-expiration').text(expiration.getMonth() + '-' 
+											+ expiration.getDate() + '-' + expiration.getFullYear());
 				
 				if(data["questerKey"]) {
 					if(data["questerKey"] != current_user) {
@@ -105,11 +108,11 @@
 	</head>
 	<body>
 		<h1>Quest Details</h1>
-		<div id="json-data"></div>
 		<h2 id="quest-title"></h2>
 		<p id="quest-description">
 		</p>
 		<p>Reward:<span id="quest-reward"></span>xp</p>
+		<p>Expires:<span id="quest-expiration"></span></p>
 		<div id="quest-status"></div>
 	</body>
 	</html>

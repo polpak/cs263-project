@@ -14,6 +14,7 @@
 
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Date" %>
+<%@ page import="java.util.Calendar" %>
 
 <%@ page import="questor.User" %>
 <%@ page import="questor.Quest" %>
@@ -54,7 +55,7 @@
 	  	<div class="quest-container">
 	  		<% if(!posted_quests.isEmpty()) { %>
 			  	<table id="posted-quests">
-			  			<tr class="header-row"><th>Title</th><th>Reward</th><th>Expiration</th><th>Status</th></tr>
+			  			<tr class="header-row"><th>Title</th><th>Reward</th><th>Expires</th><th>Status</th></tr>
 			  			<%
 			  				for(Quest quest : posted_quests){
 			  				  				String status = "Looking for quester";
@@ -67,11 +68,17 @@
 			  				  				else if(quest.getExpiration().before(new Date())) {
 			  				  					status = "Expired";
 			  				  				}
+			  				  				Calendar c = Calendar.getInstance();
+			  				  				c.setTime(quest.getExpiration());
+			  				  				String expirationString = String.format("%d-%02d-%d", 
+			  				  														c.get(Calendar.MONTH)+1, 
+			  				  														c.get(Calendar.DAY_OF_MONTH), 
+			  				  														c.get(Calendar.YEAR));
 			  			%>
 			  				<tr>
 			  					<td><a href="/questor/show.jsp?k=<%=quest.getQuestKey()%>"><%=quest.getTitle()%></a></td>
 			  					<td><%=quest.getReward()%></td>
-			  					<td><%=quest.getExpiration()%></td>
+			  					<td><%=expirationString %></td>
 			  					<td><%=status%></td>
 			  				</tr>
 			  		<%
@@ -88,7 +95,7 @@
 		  		if(!accepted_quests.isEmpty()) {
 		  	%>
 			  	<table id="accepted-quests">
-			  			<tr class="header-row"><th>Title</th><th>Reward<th><th>Expiration</th><th>Status</th></tr>
+			  			<tr class="header-row"><th>Title</th><th>Reward</th><th>Expiration</th><th>Status</th></tr>
 			  			<%
 			  				for(Quest quest : accepted_quests){
 			  				  				String status = "In progress";
@@ -99,11 +106,17 @@
 			  				  				else if(quest.getExpiration().before(new Date())) {
 			  				  					status = "Expired";
 			  				  				}
+			  				  				Calendar c = Calendar.getInstance();
+			  				  				c.setTime(quest.getExpiration());
+			  				  				String expirationString = String.format("%d-%02d-%d", 
+			  				  														c.get(Calendar.MONTH)+1, 
+			  				  														c.get(Calendar.DAY_OF_MONTH), 
+			  				  														c.get(Calendar.YEAR));
 			  			%>
 			  				<tr>
 			  					<td><a href="/questor/show.jsp?k=<%=quest.getQuestKey()%>"><%=quest.getTitle()%></a></td>
 			  					<td><%=quest.getReward()%></td>
-			  					<td><%=quest.getExpiration()%></td>
+			  					<td><%=expirationString%></td>
 			  					<td><%=status %></td>
 			  				</tr>
 			  		<% } %>

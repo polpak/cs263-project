@@ -13,8 +13,12 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.gson.Gson;
 
 
@@ -68,6 +72,21 @@ public class Quest {
 															FilterOperator.EQUAL,
 															questMaster.getUserKey()
 													)).addSort("expiration", SortDirection.ASCENDING);
+		try {
+			return Quest.fromEntities(GAEDatastore.prepare(query).asList(FetchOptions.Builder.withDefaults()));
+		} catch (ValueError e) {
+			return new ArrayList<Quest>();
+		}
+	}
+	
+	public static List<Quest> getAvailableForUser(User questor) {
+		Filter notOwner = new Query.FilterPredicate("quest_master_key",
+				FilterOperator.NOT_EQUAL,
+				questor.getUserKey()
+		);
+		
+		
+		Query query = new Query("Quest").setFilter(notOwner);
 		try {
 			return Quest.fromEntities(GAEDatastore.prepare(query).asList(FetchOptions.Builder.withDefaults()));
 		} catch (ValueError e) {
@@ -160,8 +179,6 @@ public class Quest {
 	}
 	
 	public void setExpiration(Date expiration) throws ValueError {
-		if(expiration == null || expiration.before(new Date()))
-			throw new ValueError("Quests must have a future date.");
 		
 		this.expiration = expiration;
 	}
@@ -220,6 +237,24 @@ public class Quest {
 		
 	}
 	
+	public static void expireQuests() {
+		
+		Query q = new Query("Quest").setFilter(new Query.FilterPredicate("expiration",
+				FilterOperator.LESS_THAN_OR_EQUAL,
+				(new Date())));
+		
+		List<Entity> expiredEntities = GAEDatastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Key> keys = new ArrayList<Key>();
+		
+		for(Entity e : expiredEntities) {
+			System.out.println("Expiring" + e.getKey().toString());
+			keys.add(e.getKey());
+		}
+		
+		GAEDatastore.delete(keys);
+		
+	}
+	
 	/*
 	 * Create an empty quest (internal use only)
 	 */
@@ -265,6 +300,7 @@ public class Quest {
 	private String questerKey;
 	private Long reward;
 	private boolean completed;
+
 
 	
 }

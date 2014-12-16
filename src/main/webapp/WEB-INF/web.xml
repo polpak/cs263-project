@@ -6,9 +6,25 @@
     <servlet-class>questor.QuestServlet</servlet-class>
   </servlet>
   
+   <servlet>
+    <servlet-name>ExpireQuestServlet</servlet-name>
+    <servlet-class>questor.ExpireQuestServlet</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>QuestServlet</servlet-name>
     <url-pattern>/quests/*</url-pattern>
+  </servlet-mapping>
+  
+  
+  <servlet-mapping>
+    <servlet-name>ExpireQuestServlet</servlet-name>
+    <url-pattern>/maintenance/startExpireQuests</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>ExpireQuestServlet</servlet-name>
+    <url-pattern>/maintenance/processExpireQuests</url-pattern>
   </servlet-mapping>
 
   <servlet>

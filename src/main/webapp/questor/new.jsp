@@ -45,7 +45,7 @@
 					var jsonData = JSON.stringify(questData);
 				    e.preventDefault();
 				    
-				    var success = function(data, textStatus, jqXHR) {
+				    success = function(data, textStatus, jqXHR) {
 				    	window.location = "/user/profile.jsp";
 				    }
 				    

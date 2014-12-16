@@ -2,6 +2,8 @@ package questor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,11 @@ import javax.servlet.http.HttpSession;
 import questor.Quest.ValueError;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.gson.Gson;
 
 
 public class QuestServlet extends HttpServlet {
@@ -89,15 +96,14 @@ public class QuestServlet extends HttpServlet {
 				res.sendError(403);
 				return;
 			}
-			
 
-			try {
-				Long id = Long.parseLong(req.getPathInfo().substring(1));
-				Quest q = Quest.fromKey(id);
-				res.setContentType("application/json");
-				res.getWriter().write(q.toJson());
-			} catch (NumberFormatException | EntityNotFoundException | ValueError e) {
-				res.sendError(404);
+			
+			if(req.getRequestURI().equals("/quests/")) {
+				doList(req, res, user);
+				return;
+			}
+			else {
+				doShow(req, res, user);
 				return;
 			}
 			
@@ -105,7 +111,51 @@ public class QuestServlet extends HttpServlet {
 		catch (IOException e) { } 
     }
     
-    @Override
+    private void doShow(HttpServletRequest req, HttpServletResponse res, User user) {
+		try {
+			try {
+				Long id = Long.parseLong(req.getPathInfo().substring(1));
+				Quest q = Quest.fromKey(id);
+				res.setContentType("application/json");
+	
+					res.getWriter().write(q.toJson());
+	
+			} catch (NumberFormatException | EntityNotFoundException | ValueError e) {
+				res.sendError(404);
+				return;
+			}
+		} catch (IOException e) {
+
+		}
+	}
+
+
+	private void doList(HttpServletRequest req, HttpServletResponse res, User user) {
+		String key = "quest_list_" + user.getUserKey();
+		
+		MemcacheService syncCache = (MemcacheService) MemcacheServiceFactory.getMemcacheService();
+	    syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+	    String json= (String) syncCache.get(key); // read from cache
+	    
+		if(json == null) {
+			List<Quest> questList = Quest.getAvailableForUser(user);
+			Gson gson = new Gson(); 
+			json = gson.toJson(questList);
+
+		    syncCache.put(key, json, Expiration.byDeltaSeconds(60)); // populate cache
+		}
+		
+		res.setContentType("application/json");
+		try {
+			res.getWriter().write(json);
+		} catch (IOException e) {
+			
+		}
+
+	}
+
+
+	@Override
     public void doPut(HttpServletRequest req, HttpServletResponse res)  {
 		try {
 	    	HttpSession session = req.getSession();

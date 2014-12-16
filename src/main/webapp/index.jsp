@@ -3,7 +3,7 @@
 
 
 <%
-	if(session.getAttribute("username") != null)
+	if(session.getAttribute("email_address") != null)
 		response.sendRedirect("/user/profile.jsp");
 	else {
 %>
