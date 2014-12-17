@@ -11,7 +11,7 @@ The CS 263 project for Chad Simmons
 * Project is built and deployed with maven
 * All java classes are fully documented via JavaDoc
 
-The running application can be seen on google app engine [here](http://http://stunning-shadow-733.appspot.com)
+The running application can be seen on google app engine [here](http://stunning-shadow-733.appspot.com)
 
 Selenium tests are included in the github project [here](https://github.com/polpak/cs263-project/tree/master/selenium-tests), and can be run using the Selenium IDE.
 
