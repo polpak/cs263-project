@@ -202,6 +202,21 @@ public class QuestServlet extends HttpServlet {
 		        		origQuest.updateStore();
 		        			
 		        	}
+		        	
+		        	if(questData.isCompleted()) {
+		        		System.out.println("Marking quest complete");
+		        		if(!origQuest.isAccepted() 
+		        			|| !origQuest.getQuesterKey().equals(user.getUserKey())) {
+		        			res.sendError(403);
+		        			return;
+		        		}
+		        		if(!origQuest.isCompleted()) {
+		        			origQuest.setCompleted(true);
+		        			user.setExperiencePoints(user.getExperiencePoints() + origQuest.getReward());
+		        			origQuest.updateStore();
+		        			user.updateStore();
+		        		}
+		        	}
 		        		
 		        }
 		        catch(Quest.ValueError e) {

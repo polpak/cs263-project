@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Transaction;
 
 
 public class User {
@@ -59,6 +60,7 @@ public class User {
 		u.userKey = u.emailAddress; 
 		u.setFirstName((String) user.getProperty("first_name"));
 		u.setLastName((String) user.getProperty("last_name"));
+		u.setExperiencePoints((Long) user.getProperty("experience_points"));
 		return u;
 	}
 	
@@ -71,11 +73,35 @@ public class User {
 		return Quest.findByQuester(this);
 	}
 	
+	public Long getExperiencePoints() {
+		return experiencePoints;
+	}
+
+	public void setExperiencePoints(Long experiencePoints) {
+		this.experiencePoints = experiencePoints;
+	}
+	
+	public void updateStore() {
+		Key key = KeyFactory.createKey("User", this.getUserKey());
+		Transaction txn = GAEDatastore.beginTransaction();
+	    try {
+	    	
+			Entity userEntity = GAEDatastore.get(key);
+			userEntity.setProperty("experience_points", this.getExperiencePoints());
+			GAEDatastore.put(userEntity);
+		} catch (EntityNotFoundException e) {
+			txn.rollback();
+		}
+	    txn.commit();
+	}
+
 	private static DatastoreService GAEDatastore = DatastoreServiceFactory.getDatastoreService();
 	
 	private String userKey;
 	private String emailAddress;
 	private String firstName;
 	private String lastName;
+	private Long experiencePoints;
+
 	
 }

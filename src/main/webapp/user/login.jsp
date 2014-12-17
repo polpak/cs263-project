@@ -54,19 +54,49 @@
 			}
 		}
 %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Questor - The world is your RPG</title>
 
-	<!DOCTYPE html>
-	<html>
-	<head>
-	<title>Questor - The world is your RPG</title>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	<link type="text/css" rel="stylesheet" href="/css/main.css"/>
-	</head>
-	<body>
-	<header>
-		<h1>Questor!</h1>
-		<h2>The world is your RPG.</h2>
-	</header>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  </head>
+  <body role="document">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">Questor</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse navbar-right">
+          <ul class="nav navbar-nav">
+            <li><a href="/user/login.jsp">Login</a></li>
+            <li><a href="/user/signup.jsp">Signup</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+ 	<div class="container" role="main" style="margin-top:5em">
 		<div id="login-form">
 			<% if(formErrors.size() != 0) { %>
 				<ul class="form-errors">
@@ -75,7 +105,9 @@
 				<% } %>
 				</ul>
 			<% } %>
+			<div class="page-header">
 			<h3>Login</h3>
+			</div>
 			<form action="/user/login.jsp" method="POST">
 				<span class="email-input"><input type="text" name="email_address" value="" placeholder="Email"></span>
 				<span class="password-input"><input type="password" name="password" value="" placeholder="Password"></span>
@@ -83,6 +115,7 @@
 			</form>
 			<p>Don't have an account? <a href="/user/signup.jsp">Signup here</a>.</p>
 		</div>
+	</div>
 	</body>
 	</html>
 <%

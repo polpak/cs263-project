@@ -15,10 +15,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.gson.Gson;
 
 
@@ -120,6 +117,7 @@ public class Quest {
 		e.setProperty("description", description);
 		e.setProperty("reward", reward);
 		e.setProperty("expiration", expiration);
+		e.setProperty("completed", completed);
 
 		GAEDatastore.put(e);
 		
@@ -184,11 +182,11 @@ public class Quest {
 	}
 
 	
-	public Long getReward() {
+	public long getReward() {
 		return reward;
 	}
 
-	public void setReward(Long value) throws ValueError {
+	public void setReward(long value) throws ValueError {
 		
 		if(value <= 0)
 			throw new ValueError("Quests must have a positive reward.");
@@ -229,6 +227,7 @@ public class Quest {
 		e.setProperty("description", description);
 		e.setProperty("reward", reward);
 		e.setProperty("expiration", expiration);
+		e.setProperty("completed", completed);
 		
 		if(this.questerKey != null)
 			e.setProperty("quester_key", this.questerKey);
@@ -281,6 +280,7 @@ public class Quest {
 			q.setExpiration((Date) entity.getProperty("expiration"));
 			q.setQuestKey((Long) entity.getProperty("quest_key"));
 			q.setReward((Long)entity.getProperty("reward"));
+			q.setCompleted((Boolean)entity.getProperty("completed"));
 			
 			if(entity.hasProperty("quester_key"))
 				q.setQuesterKey((String) entity.getProperty("quester_key"));
@@ -298,7 +298,7 @@ public class Quest {
 	private String description;
 	private Date expiration;
 	private String questerKey;
-	private Long reward;
+	private long reward;
 	private boolean completed;
 
 
