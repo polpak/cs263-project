@@ -50,17 +50,17 @@
         </div>
       </div>
     </nav>
- 	<div class="container" role="main" style="margin-top:5em">
-		<div class="container" id="signup-form">
-			<h3>Signup</h3>
+ 	<div class="row" role="main" style="margin-top:5em">
+		<div class="col-md-4 col-md-offset-4" id="signup-form">
 			<form action="/user/signup.jsp" method="POST">
-				<span class="first-name-input"><input type="text" name="first_name" value="" placeholder="First Name"></span>
-				<span class="last-name-input"><input type="text" name="last_name" value="" placeholder="Last Name"></span>
-				<span class="email-address-input"><input type="text" name="email_address" value="" placeholder="Email"></span>
-				<span class="password-input"><input type="password" name="password" value="" placeholder="Password"></span>
-				<span class="password-input"><input type="password" name="confirm_password" value="" placeholder="Confirm Password"></span>
+				<span class="first-name-input"><input type="text" name="first_name" value="" placeholder="First Name" required></span><br>
+				<span class="last-name-input"><input type="text" name="last_name" value="" placeholder="Last Name" required></span><br>
+				<span class="email-address-input"><input type="text" name="email_address" value="" placeholder="Email" required></span><br>
+				<span class="password-input"><input type="password" name="password" value="" placeholder="Password" required></span><br>
+				<span class="password-input"><input type="password" name="confirm_password" value="" placeholder="Confirm Password" required></span><br>
 				<span class="signup-submit"><input type="submit" name="Signup" value="Signup"></span>
 			</form>
+			<p>Already have an account? <a href="/user/login.jsp">Login here</a>.</p> 	
 		</div>
 	</div>
 	</body>

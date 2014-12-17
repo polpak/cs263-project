@@ -28,9 +28,18 @@
 	if(session.getAttribute("email_address") == null) {
 		response.sendRedirect("/user/login.jsp");
 	} else { 
-		User user = User.fromEmailAddress((String)session.getAttribute("email_address"));
+		User user = null;
+		try {
+			user = User.fromEmailAddress((String)session.getAttribute("email_address"));
+		} catch(EntityNotFoundException e) {
+			session.removeAttribute("email_address");
+			response.sendRedirect("user/login.jsp");
+			return;
+		}
+		
 		List<Quest> posted_quests = user.getPostedQuests();
 		List<Quest> accepted_quests = user.getAcceptedQuests();
+
 %>
 <!DOCTYPE html>
 <html lang="en">

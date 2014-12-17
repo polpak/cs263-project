@@ -116,6 +116,9 @@ public class AvatarServlet extends HttpServlet {
 		    try {
 				Entity user = datastore.get(userKey);
 				if(!user.hasProperty("avatar_key")) {
+					res.setHeader("Pragma", "No-cache");  
+					res.setHeader("Cache-Control", "no-cache");  
+					res.setHeader("Expires", "1");
 					res.sendRedirect("/images/default_avatar.svg");
 			    }
 			    else {
