@@ -122,7 +122,7 @@
 				$('#quest-expiration').text((expiration.getMonth()+1) + '-' 
 											+ expiration.getDate() + '-' + expiration.getFullYear());
 				acceptBtn = '<form id="accept-quest-form"><input type="submit" name="Accept Quest" value="Accept Quest"></form>';
-				completeBtn = '<form id="complete-quest-form"><input type="submit" name="Accept Quest" value="Complete Quest"></form>'
+				completeBtn = '<form id="complete-quest-form"><input type="submit" name="Complete Quest" value="Complete Quest"></form>'
 				if(data['completed']) {
 					$('#quest-status').html('<p>Quest Complete!</p>');
 				}

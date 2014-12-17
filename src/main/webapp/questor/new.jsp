@@ -93,10 +93,10 @@
 			
 			StringBuffer formElem = new StringBuffer(String.format("<label for=\"%s\">%s</label>", lower, field));
 			if(type.equals("textarea")) 
-				formElem.append(String.format("<textarea rows=\"5\" cols=\"50\" name=\"%s\" id=\"%s\" required></textarea>",
+				formElem.append(String.format("<textarea style=\"display: block;\" rows=\"5\" cols=\"50\" name=\"%s\" id=\"%s\" required></textarea>",
 												lower, lower));
 			else 
-				formElem.append(String.format("<input type=\"%s\" name=\"%s\" id=\"%s\" value=\"\" required>", 
+				formElem.append(String.format("<input style=\"display: block;\" type=\"%s\" name=\"%s\" id=\"%s\" value=\"\" required>", 
 												type, lower, lower));
 			
 		%>

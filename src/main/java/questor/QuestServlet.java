@@ -222,17 +222,18 @@ public class QuestServlet extends HttpServlet {
 		        	}
 		        	
 		        	if(questData.isCompleted()) {
-		        		System.out.println("Marking quest complete");
 		        		if(!origQuest.isAccepted() 
 		        			|| !origQuest.getQuesterKey().equals(user.getUserKey())) {
 		        			res.sendError(403);
 		        			return;
 		        		}
+		        		
 		        		if(!origQuest.isCompleted()) {
+			        		System.out.println("Marking quest complete");
 		        			origQuest.setCompleted(true);
 		        			user.setExperiencePoints(user.getExperiencePoints() + origQuest.getReward());
-		        			origQuest.updateStore();
 		        			user.updateStore();
+		        			origQuest.updateStore();
 		        		}
 		        	}
 		        		

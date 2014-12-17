@@ -76,7 +76,7 @@ public class User {
 	/*
 	 * Getter for the experiencePoints field
 	 */
-	public Long getExperiencePoints() {
+	public long getExperiencePoints() {
 		return experiencePoints;
 	}
 
@@ -84,7 +84,7 @@ public class User {
 	/*
 	 * Setter for the experiencePoints field
 	 */
-	public void setExperiencePoints(Long experiencePoints) {
+	public void setExperiencePoints(long experiencePoints) {
 		this.experiencePoints = experiencePoints;
 	}
 	
@@ -133,16 +133,15 @@ public class User {
 	 */
 	public void updateStore() {
 		Key key = KeyFactory.createKey("User", this.getUserKey());
-		Transaction txn = GAEDatastore.beginTransaction();
+
 	    try {
 	    	
 			Entity userEntity = GAEDatastore.get(key);
 			userEntity.setProperty("experience_points", this.getExperiencePoints());
 			GAEDatastore.put(userEntity);
 		} catch (EntityNotFoundException e) {
-			txn.rollback();
-		}
-	    txn.commit();
+		
+		}	    
 	}
 
 	private static DatastoreService GAEDatastore = DatastoreServiceFactory.getDatastoreService();
@@ -151,7 +150,7 @@ public class User {
 	private String emailAddress;
 	private String firstName;
 	private String lastName;
-	private Long experiencePoints;
+	private long experiencePoints;
 
 	
 }

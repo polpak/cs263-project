@@ -348,6 +348,17 @@ public class Quest {
 				FilterOperator.LESS_THAN_OR_EQUAL,
 				(new Date())));
 		
+		Quest.expireByQuery(q);
+		
+		q = new Query("Quest").setFilter(new Query.FilterPredicate("completed",
+				FilterOperator.EQUAL,
+				true));
+		
+		Quest.expireByQuery(q);
+		
+	}
+	
+	private static void expireByQuery(Query q) {
 		List<Entity> expiredEntities = GAEDatastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		List<Key> keys = new ArrayList<Key>();
 		
@@ -357,9 +368,8 @@ public class Quest {
 		}
 		
 		GAEDatastore.delete(keys);
-		
 	}
-	
+
 	/*
 	 * Create an empty quest (internal use only)
 	 */

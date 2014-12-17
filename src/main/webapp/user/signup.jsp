@@ -7,7 +7,6 @@
 <%@ page import="com.google.appengine.api.datastore.EntityNotFoundException" %>
 <%@ page import="com.google.appengine.api.datastore.FetchOptions" %>
 <%@ page import="com.google.appengine.api.datastore.Key" %>
-<%@ page import="com.google.appengine.api.datastore.Transaction" %>
 <%@ page import="com.google.appengine.api.datastore.KeyFactory" %>
 <%@ page import="com.google.appengine.api.datastore.Query" %>
 
@@ -58,12 +57,12 @@
 				// No missing or invalid data so...
 				String email_address = request.getParameter("email_address").toLowerCase().trim();
 
-				Transaction txn = datastore.beginTransaction();
 				try {
 				    Key userKey = KeyFactory.createKey("User", email_address);
 				    Entity user = datastore.get(userKey);
 				    
 				    formErrors.add("A user with this email address already exists.");
+				    
 				} catch (EntityNotFoundException e) {
 					Entity user = new Entity("User", email_address);
 					for(String prop : requiredFields.keySet()) {
@@ -71,10 +70,10 @@
 							user.setProperty(prop, request.getParameter(prop).trim());
 					}
 					user.setProperty("experience_points", new Long(0));
+					user.setProperty("email_address", email_address);
 					datastore.put(user);
 					session.setAttribute("email_address", email_address);
 				}
-				txn.commit();
 				
 				if(session.getAttribute("email_address") != null)
 					response.sendRedirect("/user/profile.jsp");

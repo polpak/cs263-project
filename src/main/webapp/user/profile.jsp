@@ -105,10 +105,11 @@
 	  	</div>
 	  	<div class="row">
 	  	<div class="quest-container col-md-6">
-	  		<% if(!posted_quests.isEmpty()) { %>
-			  <div class="page-header">
+	  		  <div class="page-header">
 		        <h3>Posted Quests</h3>
 		      </div>
+	  		<% if(!posted_quests.isEmpty()) { %>
+
 			  	<table id="posted-quests" class="table table-striped">
 			  	<thead>
 			  			<tr class="header-row"><th>Title</th><th>Reward</th><th>Expires</th><th>Status</th></tr>

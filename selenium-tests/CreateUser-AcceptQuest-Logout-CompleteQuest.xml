@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://stunning-shadow-733.appspot.com/" />
+<title>New Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/user/signup.jsp</td>
+	<td></td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>javascript{Math.floor(Math.random()*11111)}</td>
+	<td>RANDNUM</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=first_name</td>
+	<td>TestFirst${RANDNUM}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=last_name</td>
+	<td>TestLast${RANDNUM}</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=email_address</td>
+	<td>TestEmail${RANDNUM}@address.com</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=password</td>
+	<td>testpass</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=confirm_password</td>
+	<td>testpass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=Signup</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>id=user-avatar</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Quests</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>//table[@id='search-results']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//table[@id='search-results']/tbody/tr/td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//tr[1]/td/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[name=&quot;Accept Quest&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Account</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Logout</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=email_address</td>
+	<td>TestEmail${RANDNUM}@address.com</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=password</td>
+	<td>testpass</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>name=Login</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//table[@id='accepted-quests']/tbody/tr/td[4]</td>
+	<td>In progress</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//table[@id='accepted-quests']/tbody/tr/td/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input[name=&quot;Complete Quest&quot;]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Account</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Profile</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//table[@id='accepted-quests']/tbody/tr/td[4]</td>
+	<td>Complete</td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/user/logout.jsp</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>/maintenance/startExpireQuests</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

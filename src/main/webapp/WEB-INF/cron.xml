@@ -3,6 +3,6 @@
   <cron>
     <url>/maintenance/startExpireQuests</url>
     <description>Remove expired quests</description>
-    <schedule>every day 00:00</schedule>
+    <schedule>every 20 minutes</schedule>
   </cron>
 </cronentries>
