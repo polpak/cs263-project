@@ -10,9 +10,15 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Transaction;
 
-
+/*
+ * The User model wraps the GAE entities for ease of use in JSP and servlets
+ */
 public class User {
 	
+	
+	/*
+	 * Exception used for data validation
+	 */
 	public class ValueError extends Exception {
 
 		/**
@@ -25,28 +31,68 @@ public class User {
 		}
 	}
 	
+	/*
+	 * Getter for the userKey field (this is the same as emailAddress)
+	 */
 	public String getUserKey() {
 		return userKey;
 	}
 
+	/*
+	 * Getter for the emailAddress field
+	 */
 	public String getEmailAddress() {
 		return emailAddress;
 	}
 
+	/*
+	 * Getter for the firstName field
+	 */
 	public String getFirstName() {
 		return firstName;
 	}
+	
+	/*
+	 * Setter for the firstName field
+	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+	
+	/*
+	 * Getter for the lastName field
+	 */
 	public String getLastName() {
 		return lastName;
 	}
+	
+	/*
+	 * Setter for the lastName field
+	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 	
+	/*
+	 * Getter for the experiencePoints field
+	 */
+	public Long getExperiencePoints() {
+		return experiencePoints;
+	}
+
 	
+	/*
+	 * Setter for the experiencePoints field
+	 */
+	public void setExperiencePoints(Long experiencePoints) {
+		this.experiencePoints = experiencePoints;
+	}
+	
+	/*
+	 * Gets a user from the datastore by their email address
+	 * 
+	 * @param	email	the emailAddress of the user
+	 */
 	public static User fromEmailAddress(String email) throws EntityNotFoundException {
 	    Key key = KeyFactory.createKey("User", email);
 	    Entity user = GAEDatastore.get(key);
@@ -54,6 +100,9 @@ public class User {
 	    return User.fromEntity(user);
 	}
 	
+	/*
+	 * Constructs a user from an Entity (used internally)
+	 */
 	private static User fromEntity(Entity user) {
 		User u = new User();
 		u.emailAddress = (String) user.getProperty("email_address");
@@ -64,23 +113,24 @@ public class User {
 		return u;
 	}
 	
-	
+	/*
+	 * Gets all the quests posted by the user
+	 */
 	public List<Quest> getPostedQuests() {
 		return Quest.findByQuestMaster(this);
 	}
 	
+	/*
+	 * Gets all the quests accepted by the user
+	 */
 	public List<Quest> getAcceptedQuests() {
 		return Quest.findByQuester(this);
 	}
 	
-	public Long getExperiencePoints() {
-		return experiencePoints;
-	}
 
-	public void setExperiencePoints(Long experiencePoints) {
-		this.experiencePoints = experiencePoints;
-	}
-	
+	/*
+	 * Saves the user to the datastore. Currently only updates experience points.
+	 */
 	public void updateStore() {
 		Key key = KeyFactory.createKey("User", this.getUserKey());
 		Transaction txn = GAEDatastore.beginTransaction();

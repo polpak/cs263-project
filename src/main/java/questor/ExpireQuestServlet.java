@@ -22,6 +22,11 @@ public class ExpireQuestServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = -2924496050669712488L;
 
+	/*
+	 * Handles get request to start or process the session expiration using push queus
+	 * 
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)  {
 		try {

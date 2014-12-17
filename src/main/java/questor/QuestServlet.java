@@ -28,6 +28,10 @@ public class QuestServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 6311415145652301522L;
 
+	/*
+	 * API enpoint for creating a new quest. Requires a valid user to be logged in.
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     public void doPost(HttpServletRequest req, HttpServletResponse res)  {
 		try {
@@ -79,7 +83,12 @@ public class QuestServlet extends HttpServlet {
 		
 	}
 	
-    
+    /*
+     * API endpoint for retrieving one quest (or a list of quests) in json format. 
+     * Requires a valid user to be logged in. 
+     * 
+     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)  {
 		try {
@@ -111,6 +120,9 @@ public class QuestServlet extends HttpServlet {
 		catch (IOException e) { } 
     }
     
+    /*
+     * Called by doGet, this method handles returning a single quest
+     */
     private void doShow(HttpServletRequest req, HttpServletResponse res, User user) {
 		try {
 			try {
@@ -129,7 +141,9 @@ public class QuestServlet extends HttpServlet {
 		}
 	}
 
-
+    /*
+     * Called by doGet, this method handles returning a list of quests
+     */
 	private void doList(HttpServletRequest req, HttpServletResponse res, User user) {
 		String key = "quest_list_" + user.getUserKey();
 		
@@ -155,6 +169,10 @@ public class QuestServlet extends HttpServlet {
 	}
 
 
+	/*
+	 * API endpoint for updating a quest. Allowed updates for completed and questerKey only.
+	 * @see javax.servlet.http.HttpServlet#doPut(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
     public void doPut(HttpServletRequest req, HttpServletResponse res)  {
 		try {

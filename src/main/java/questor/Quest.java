@@ -24,6 +24,9 @@ import com.google.gson.Gson;
  */
 public class Quest {
 	
+	/*
+	 * Exception used for data validation
+	 */
 	public class ValueError extends Exception {
 
 		public ValueError(String string) {
@@ -36,6 +39,11 @@ public class Quest {
 		private static final long serialVersionUID = 8181120157863862073L;
 	}
 	
+	/*
+	 * Returns a list of quests from the datastore given a list of their keys
+	 * 
+	 * @param 	questKeys	the list of quest keys to retrieve
+	 */
 	public static List<Quest> fromKeys(List<Key> questKeys) throws ValueError {
 
 		List<Entity> ents = new ArrayList<Entity>(GAEDatastore.get(questKeys).values());
@@ -47,11 +55,21 @@ public class Quest {
 		return quests;
 	}
 	
-	
+	/*
+	 * Fetches a single quest from the datastore by its key
+	 * 
+	 * @param	questKey	the key for the quest to return
+	 */
 	public static Quest fromKey(Long questKey) throws EntityNotFoundException, ValueError {
 		return Quest.fromEntity(GAEDatastore.get(KeyFactory.createKey("Quest", questKey.longValue())));
 	}
 	
+	
+	/*
+	 * Fetches a list of quests from the datastore which have been accepted by the quester
+	 * 
+	 * @param	quester		the user which accepted the quests
+	 */
 	public static List<Quest> findByQuester(User quester) {
 		Query query = new Query("Quest").setFilter(new Query.FilterPredicate("quester_key",
 															FilterOperator.EQUAL,
@@ -64,6 +82,11 @@ public class Quest {
 		}
 	}
 	
+	/*
+	 * Fetches a list of quests from the datastore which have been posted by the given questMaster
+	 * 
+	 * @param 	questMaster		the user which posted the quests
+	 */
 	public static List<Quest> findByQuestMaster(User questMaster) {
 		Query query = new Query("Quest").setFilter(new Query.FilterPredicate("quest_master_key",
 															FilterOperator.EQUAL,
@@ -76,6 +99,12 @@ public class Quest {
 		}
 	}
 	
+	/*
+	 * Fetches a list of quests from the datastore which the user may be able to accept.
+	 * This list will not include any quests posted by the given user
+	 * 
+	 * @param 	questor		the user looking for a quest
+	 */
 	public static List<Quest> getAvailableForUser(User questor) {
 		Filter notOwner = new Query.FilterPredicate("quest_master_key",
 				FilterOperator.NOT_EQUAL,
@@ -91,6 +120,16 @@ public class Quest {
 		}
 	}
 
+	/*
+	 * The public constructor for a quest. Raises ValueError if the fields aren't acceptable.
+	 * This constructor will automatically add the quest to the datastore. The quest expiration date will
+	 * be auto-filled to 2 days from the current date.
+	 * 
+	 * @param	questMaster		the user posting the quest
+	 * @param	title			the quest title
+	 * @param 	description		the quest description
+	 * @param	reward			the quest reward
+	 */
 	public Quest(User questMaster, String title, String description, Long reward) 
 			throws ValueError {
 		
@@ -127,33 +166,60 @@ public class Quest {
 	}
 
 
+	/*
+	 * Getter for the questerKey field
+	 */
 	public String getQuesterKey() {
 		return questerKey;
 	}
 	
+	/*
+	 * Getter for the completed field
+	 */
 	public boolean isCompleted() {
 		return completed;
 	}
 	
+	
+	/*
+	 * Helper method to determine if the quest is accepted
+	 */
 	public boolean isAccepted() {
 		return (this.questerKey != null);
 	}
 	
+	/*
+	 * Setter for the questerKey field
+	 */
 	public void setQuesterKey(String questerKey) {
 		this.questerKey = questerKey;
 	}
 
+	/*
+	 * Setter for the completed field
+	 */
 	public void setCompleted(boolean completed) {
 		this.completed = completed;
 	}
 	
+	/*
+	 * Getter for the questMasterKey field
+	 */
 	public String getQuestMasterKey() {
 		return questMasterKey;
 	}
 
+	/*
+	 * Getter for the title field
+	 */
 	public String getTitle() {
 		return title;
 	}
+	
+
+	/*
+	 * Setter for the title field
+	 */
 	public void setTitle(String title) throws ValueError {
 		
 		if(title == null || title.trim().isEmpty())
@@ -161,6 +227,10 @@ public class Quest {
 		
 		this.title = title;
 	}
+	
+	/*
+	 * Getter for the description field
+	 */
 	public String getDescription() throws ValueError {
 		
 		if(description == null || description.trim().isEmpty())
@@ -168,24 +238,40 @@ public class Quest {
 		
 		return description;
 	}
+	
+	/*
+	 * Setter for the description field
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	
+	/*
+	 * Getter for the expiration field
+	 */
 	public Date getExpiration() {
 		return expiration;
 	}
 	
+	
+	/*
+	 * Setter for the expiration field
+	 */
 	public void setExpiration(Date expiration) throws ValueError {
 		
 		this.expiration = expiration;
 	}
 
-	
+	/*
+	 * Getter for the reward field
+	 */
 	public long getReward() {
 		return reward;
 	}
 
+	/*
+	 * Setter for the reward field
+	 */
 	public void setReward(long value) throws ValueError {
 		
 		if(value <= 0)
@@ -194,15 +280,26 @@ public class Quest {
 		this.reward = value;
 	}
 
-
+	/*
+	 * Getter for the questKey field
+	 */
 	public Long getQuestKey() {
 		return questKey;
 	}
 
+	/*
+	 * Setter for the questKey field
+	 */
 	public void setQuestKey(Long value) {
 		this.questKey = value;
 	}
 
+	/*
+	 * Construct a quest from a json string. Note that this newly created
+	 * quest will not be stored in the datastore.
+	 * 
+	 * @param 	json	the json representation of the quest
+	 */
 	public static Quest fromJSON(String json) throws ValueError {
 		Gson gson = new Gson();
 		System.out.println(json);
@@ -210,12 +307,18 @@ public class Quest {
     	return q;
 	}
 	
+	/*
+	 * Convert a quest to a json string.
+	 */
 	public String toJson() {
 		Gson gson = new Gson();
     	String json = gson.toJson(this);
     	return json;
 	}
 	
+	/*
+	 * Save a quest to the datastore (updating its properties)
+	 */
 	public void updateStore() throws EntityNotFoundException {
 		if(this.questKey == null)
 			throw new EntityNotFoundException(null);
@@ -236,6 +339,9 @@ public class Quest {
 		
 	}
 	
+	/*
+	 * Deletes all quests which have expired
+	 */
 	public static void expireQuests() {
 		
 		Query q = new Query("Quest").setFilter(new Query.FilterPredicate("expiration",

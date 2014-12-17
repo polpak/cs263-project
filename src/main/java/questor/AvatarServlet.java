@@ -33,11 +33,12 @@ public class AvatarServlet extends HttpServlet {
 	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 	private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    /**
+	/*
 	 * Handles a post request to the servlet and updates the currently logged in user's avatar
 	 * in the blobstore.
 	 * 
 	 * If the session doesn't have a valid user logged in, the method will redirect to the login page
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res)    
@@ -93,12 +94,13 @@ public class AvatarServlet extends HttpServlet {
         res.sendRedirect("/user/profile.jsp");
     }
     
-    
-    /**
-	 * Handles a get request to the servlet and serves the currently logged in user's avatar
+
+    /*
+     * Handles a get request to the servlet and serves the currently logged in user's avatar
 	 * from the blobstore.
 	 * 
 	 * If the session doesn't have a valid user logged in, the method will redirect to the login page
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
     public void doGet(HttpServletRequest req, HttpServletResponse res) 
     		throws IOException {
